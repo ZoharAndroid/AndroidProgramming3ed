@@ -4,6 +4,16 @@ public class Question {
 
     private int mTextResId;
     private boolean mAnswerTrue;
+    // 用户是否回答了
+    private boolean mUserAnswered;
+
+    public boolean isUserAnswered() {
+        return mUserAnswered;
+    }
+
+    public void setUserAnswered(boolean userAnswered) {
+        mUserAnswered = userAnswered;
+    }
 
     public Question(int textResId, boolean answerTrue) {
         mTextResId = textResId;
