@@ -1,5 +1,6 @@
 package com.zohar.geoquiz;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +24,7 @@ public class QuizActivity extends AppCompatActivity {
     private ImageButton mNextButton;
     private ImageButton mPrevButton;
     private TextView mQuestionTextView;
+    private Button mCheatButton;
 
     private int mCorrectCount = 0; // 回答正确的分数
     private int mAnswerCount = 0; // 回答问题数
@@ -94,6 +96,15 @@ public class QuizActivity extends AppCompatActivity {
                 }
                 updateQuestion();
 
+            }
+        });
+
+        mCheatButton = findViewById(R.id.cheat_button);
+        mCheatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = CheatActivity.newIntent(QuizActivity.this, mQuestionBank[mCurrentIndex].isAnswerTrue());
+                startActivity(intent);
             }
         });
 
