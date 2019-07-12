@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -47,21 +48,35 @@ public class CrimeListFragment extends Fragment {
         mCrimeRecyclerView.setAdapter(mCrimeAdapter);
     }
 
-    private class CrimeHolder extends RecyclerView.ViewHolder{
+    private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView mCrimeTitleTextView;
-        private TextView mCrimeDate;
+         TextView mCrimeTitleTextView;
+         TextView mCrimeDate;
+
+         private Crime mCrime;
 
         public CrimeHolder(@NonNull View itemView) {
             super(itemView);
-
             mCrimeDate = itemView.findViewById(R.id.crime_date);
             mCrimeTitleTextView = itemView.findViewById(R.id.crime_tile);
 
+            itemView.setOnClickListener(this);
+        }
+
+        private void bind(Crime crime){
+            mCrime = crime;
+            mCrimeTitleTextView.setText(crime.getTitle());
+            mCrimeDate.setText(crime.getDate().toString());
+        }
+
+
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(getContext(), mCrime.getTitle() + " click!" , Toast.LENGTH_SHORT).show();
         }
     }
 
-    private class CrimeAdapter extends RecyclerView.Adapter{
+    private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder>{
 
         public CrimeAdapter(List<Crime> crimes) {
             mCrimes = crimes;
@@ -69,15 +84,17 @@ public class CrimeListFragment extends Fragment {
 
         @NonNull
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        public CrimeHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+            //getItemViewType(i)
             View view = LayoutInflater.from(getContext()).inflate(R.layout.item_list_crime,viewGroup, false);
             CrimeHolder holder = new CrimeHolder(view);
             return holder;
         }
 
         @Override
-        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-
+        public void onBindViewHolder(CrimeHolder viewHolder, int i) {
+            Crime crime = mCrimes.get(i);
+            viewHolder.bind(crime);
         }
 
         @Override
