@@ -34,12 +34,26 @@
     </LinearLayout>
 
 
-    <Button
-        android:id="@+id/cheat_button"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
-        android:text="@string/cheat_button" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cheat_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cheat_button" />
+
+        <TextView
+            android:id="@+id/cheat_count_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="3" />
+
+    </LinearLayout>
+
 
     <ImageButton
         android:id="@+id/prev_button"

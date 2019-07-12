@@ -1,19 +1,15 @@
 package com.zohar.geoquiz;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
-
-import java.security.Key;
 
 public class QuizActivity extends AppCompatActivity {
 
@@ -29,10 +25,12 @@ public class QuizActivity extends AppCompatActivity {
     private ImageButton mPrevButton;
     private TextView mQuestionTextView;
     private Button mCheatButton;
+    private TextView mCheatCountTextView;
 
     private int mCorrectCount = 0; // 回答正确的分数
     private int mAnswerCount = 0; // 回答问题数
     private boolean mIsUserAnswered; // 用户是否打过这个题
+    private int mCheatCount = 3; // 舞弊次数
 
     private Question[] mQuestionBank = new Question[]{
             new Question(R.string.question_australia, true),
@@ -58,8 +56,10 @@ public class QuizActivity extends AppCompatActivity {
 
         mQuestionBank[mCurrentIndex].setUserAnswered(mIsUserAnswered);
 
-        Log.d(TAG, "onCreate(Bundle)");
         setContentView(R.layout.activity_quiz);
+
+        mCheatCountTextView = findViewById(R.id.cheat_count_text_view);
+        mCheatCountTextView.setText(mCheatCount+"");
         mQuestionTextView = findViewById(R.id.text_question_view);
         mQuestionTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,6 +138,16 @@ public class QuizActivity extends AppCompatActivity {
             }
 
             mIsCheater = CheatActivity.wasAnswerShown(data);
+            if (mIsCheater){
+                // 如果查看了
+                mCheatCount--;
+                if (mCheatCount == 0){
+                    mCheatButton.setVisibility(View.INVISIBLE);
+                    mCheatCountTextView.setVisibility(View.INVISIBLE);
+                }
+                mCheatCountTextView.setText(mCheatCount + "");
+
+            }
         }
 
     }
