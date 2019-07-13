@@ -15,7 +15,11 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class CrimeListFragment extends Fragment {
 
@@ -69,7 +73,9 @@ public class CrimeListFragment extends Fragment {
         private void bind(Crime crime){
             mCrime = crime;
             mCrimeTitleTextView.setText(crime.getTitle());
-            mCrimeDate.setText(crime.getDate().toString());
+            Date date = crime.getDate();
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd E HH:mm:ss", Locale.CHINA);
+            mCrimeDate.setText(format.format(date));
             mSolvedImageView.setVisibility(mCrime.isSolved()? View.VISIBLE : View.GONE);
         }
 
