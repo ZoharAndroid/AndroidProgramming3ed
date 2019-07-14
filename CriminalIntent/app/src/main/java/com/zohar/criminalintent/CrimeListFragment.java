@@ -8,6 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -30,6 +33,12 @@ public class CrimeListFragment extends Fragment {
 
     private final int REQUEST_CRIME = 1;
     private Crime mCrime;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Nullable
     @Override
@@ -109,6 +118,26 @@ public class CrimeListFragment extends Fragment {
         if (requestCode == REQUEST_CRIME){
 
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_crime_list, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.new_crime:
+                Crime crime = new Crime();
+                CrimeLab.getInstance(getContext()).addCrime(crime);
+                Intent intent = CrimePagerActivity.newIntent(getContext(), crime.getId());
+                startActivity(intent);
+                return true;
+                default: super.onOptionsItemSelected(item);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder>{

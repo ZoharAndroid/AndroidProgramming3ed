@@ -18,7 +18,8 @@
         </activity>
 
         <activity android:name=".CrimeActivity"/>
-        <activity android:name=".CrimePagerActivity"/>
+        <activity android:name=".CrimePagerActivity"
+            android:parentActivityName=".CrimeListActivity"/>
     </application>
 
 </manifest>
