@@ -85,6 +85,7 @@ public class CrimeFragment extends Fragment {
 
         mDateButton = view.findViewById(R.id.crime_date);
         updateDate();
+
         mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,6 +97,7 @@ public class CrimeFragment extends Fragment {
         });
 
         mTimeButton = view.findViewById(R.id.crime_time);
+        updateTime();
         mTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,15 +130,30 @@ public class CrimeFragment extends Fragment {
             mCrime.setDate(date);
             updateDate();
         }
+
+        if (requestCode == REQUEST_CODE_TIME){
+            Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
+            mCrime.setDate(date);
+            updateTime();
+        }
     }
 
+    /**
+     * 更新日期
+     *
+     */
     private void updateDate() {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd E", Locale.CHINA);
         String date = format.format(mCrime.getDate());
         mDateButton.setText(date);
     }
 
+    /**
+     * 更新时间
+     */
     private void updateTime(){
-
+        DateFormat format = new SimpleDateFormat("HH:mm:ss", Locale.CHINA);
+        String time = format.format(mCrime.getDate());
+        mTimeButton.setText(time);
     }
 }
