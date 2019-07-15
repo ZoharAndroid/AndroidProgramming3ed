@@ -5,10 +5,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -16,6 +18,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -29,11 +32,15 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -51,8 +58,10 @@ public class CrimeFragment extends Fragment {
     private static final int PERMISSION_REQUEST_CODE = 4;
     private static final int PERMISSION_REQUSET_CODE_CALL = 6;
     private static final int REQUEST_READ_CONTACT_CODE = 5;
+    private static final int REQUSET_CODE_PHOTH = 7;
 
     private Crime mCrime;
+    private File mCrimePhotoFile;
 
     private EditText mTitleField;
     private Button mDateButton;
@@ -61,6 +70,9 @@ public class CrimeFragment extends Fragment {
     private Button mSuspentButton;
     private Button mReportButton;
     private Button mCallButton;
+    private ImageButton mPhotoButton;
+    private ImageView mPhotoImage;
+
     private String mPhone;
 
     public static Fragment newInstance(UUID crimeId) {
@@ -79,6 +91,7 @@ public class CrimeFragment extends Fragment {
         setHasOptionsMenu(true);
         UUID crimeId = (UUID) getArguments().getSerializable(ARGS_CRIME_ID);
         mCrime = CrimeLab.getInstance(getContext()).getCrime(crimeId);
+        mCrimePhotoFile = CrimeLab.getInstance(getContext()).getPhotoFile(mCrime);
     }
 
     @Nullable
@@ -197,6 +210,29 @@ public class CrimeFragment extends Fragment {
                 }
             }
         });
+
+        mPhotoImage = view.findViewById(R.id.crime_photo);
+        mPhotoButton = view.findViewById(R.id.crime_camera);
+        // 检测是否有相机可用
+        final Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        boolean canTakePhoto = (captureIntent.resolveActivity(manager) != null && mCrimePhotoFile != null);
+        mPhotoButton.setEnabled(canTakePhoto);
+
+        mPhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = FileProvider.getUriForFile(getActivity(), "com.zohar.criminalintent.fileprovider", mCrimePhotoFile);
+                captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+
+                List<ResolveInfo> carmareActivies = getActivity().getPackageManager().queryIntentActivities(captureIntent, PackageManager.MATCH_DEFAULT_ONLY);
+
+                for (ResolveInfo activity : carmareActivies) {
+                    getActivity().grantUriPermission(activity.activityInfo.packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                }
+                startActivityForResult(captureIntent, REQUSET_CODE_PHOTH);
+            }
+        });
+
         return view;
     }
 
@@ -314,6 +350,10 @@ public class CrimeFragment extends Fragment {
                     cursor.close();
                 }
             }
+        }
+
+        if (requestCode == REQUSET_CODE_PHOTH){
+
         }
     }
 

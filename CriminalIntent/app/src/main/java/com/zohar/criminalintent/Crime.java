@@ -57,4 +57,8 @@ public class Crime {
     public void setMsuspend(String msuspend) {
         this.msuspend = msuspend;
     }
+
+    public String getPhotoFilename(){
+        return "IMG_" + getId().toString() + ".jpg";
+    }
 }

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -99,8 +100,6 @@ public class CrimeLab {
         return new CrimeCursorWrapper(cursor);
     }
 
-
-
     /**
      * 删除
      *
@@ -108,5 +107,16 @@ public class CrimeLab {
      */
     public void deleteCrime(Crime crime){
         mDBHelper.delete(CrimeDB.NAME, CrimeDB.Col.UUID + " = ?", new String[]{crime.getId().toString()});
+    }
+
+    /**
+     * 获取图像文件
+     *
+     * @param crime
+     * @return
+     */
+    public File getPhotoFile(Crime crime){
+        File filesDir = mContext.getFilesDir();
+        return new File(filesDir, crime.getPhotoFilename());
     }
 }

@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.zohar.criminalintent">
 
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:allowBackup="true"
@@ -20,9 +20,20 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".CrimeActivity"/>
-        <activity android:name=".CrimePagerActivity"
-            android:parentActivityName=".CrimeListActivity"/>
+        <activity android:name=".CrimeActivity" />
+        <activity
+            android:name=".CrimePagerActivity"
+            android:parentActivityName=".CrimeListActivity" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.zohar.criminalintent.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/files" />
+        </provider>
     </application>
 
 </manifest>
