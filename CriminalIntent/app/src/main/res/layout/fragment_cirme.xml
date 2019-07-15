@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:padding="16dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <TextView
         style="?android:listSeparatorTextViewStyle"
@@ -30,20 +30,40 @@
         android:orientation="horizontal">
 
         <Button
-            tools:text="2019-07-14 星期三"
             android:id="@+id/crime_date"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_height="wrap_content" />
+            tools:text="2019-07-14 星期三" />
 
         <Button
-            tools:text="16:16:40"
             android:id="@+id/crime_time"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            tools:text="16:16:40" />
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/crime_suspend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:text="@string/crime_suspect_text" />
+
+    <Button
+        android:id="@+id/crime_report"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:text="@string/crime_report_text" />
+
+    <Button
+        android:layout_marginTop="10dip"
+        android:text="@string/call_phone"
+        android:id="@+id/crime_call"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 
     <CheckBox

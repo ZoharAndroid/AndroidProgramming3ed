@@ -39,6 +39,7 @@ public class CrimeLab {
         values.put(CrimeDB.Col.TITLE, crime.getTitle());
         values.put(CrimeDB.Col.DATE, crime.getDate().toString());
         values.put(CrimeDB.Col.SOLVED, crime.isSolved());
+        values.put(CrimeDB.Col.SUSPEND, crime.getMsuspend());
         return values;
     }
 
