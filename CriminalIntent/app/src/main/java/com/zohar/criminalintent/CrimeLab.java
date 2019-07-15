@@ -49,10 +49,19 @@ public class CrimeLab {
     /**
      * 添加
      *
-     * @param crime
+     * @param crime crime
      */
     public void addCrime(Crime crime){
         mCrimes.add(crime);
     }
 
+
+    /**
+     * 删除
+     *
+     * @param crime crime
+     */
+    public void deletCrime(Crime crime){
+        mCrimes.remove(crime);
+    }
 }
