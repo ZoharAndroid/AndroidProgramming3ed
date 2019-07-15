@@ -2,6 +2,7 @@ package com.zohar.criminalintent;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -133,7 +134,7 @@ public class CrimeFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.crime_remove:
-                CrimeLab.getInstance(getContext()).deletCrime(mCrime);
+                CrimeLab.getInstance(getContext()).deleteCrime(mCrime);
                 getActivity().finish();
                 return true;
         }
@@ -157,6 +158,14 @@ public class CrimeFragment extends Fragment {
             updateTime();
         }
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // 更新数据库中的内容
+        CrimeLab.getInstance(getContext()).updateCrime(mCrime);
+    }
+
 
     /**
      * 更新日期
