@@ -2,7 +2,7 @@
 <!-- TOC -->
 
 - [1. GeoQuiz](#1-GeoQuiz)
-- [2. CriminalInten](#2-CriminalInten)
+- [2. CriminalIntent](#2-CriminalIntent)
 
 <!-- /TOC -->
 # 1. GeoQuiz
@@ -11,4 +11,8 @@
 <img src="https://raw.githubusercontent.com/ZoharAndroid/MarkdownImages/master/2019-07/geoquiz.gif" width = "250px"/>
 </p>
 
-# 2. CriminalInten
+# 2. CriminalIntent
+
+<p align = "center">
+<img src="https://raw.githubusercontent.com/ZoharAndroid/AndroidProgramming3ed/master/img/CrimeIntent.gif" width = "250px"/>
+</p>
