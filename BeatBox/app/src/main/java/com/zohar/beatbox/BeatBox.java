@@ -1,7 +1,10 @@
 package com.zohar.beatbox;
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.util.Log;
 
 import java.io.IOException;
@@ -14,12 +17,16 @@ public class BeatBox {
 
     // sound文件名
     private static final String SOUND_FOLDER = "sample_sound";
+    private static final int MAX_SOUNDS = 5;
+
     private AssetManager mAssets;
     private List<Sound> mSounds = new ArrayList<>();
+    private SoundPool mSoundPool;
 
     public BeatBox(Context context){
         mAssets = context.getAssets();
         loadSound(); // 加载sound文件
+        mSoundPool = new SoundPool(MAX_SOUNDS, AudioManager.STREAM_MUSIC, 0);
     }
 
     /**
@@ -33,6 +40,7 @@ public class BeatBox {
 
             for (String soundName : soundNames){
                 Sound sound = new Sound(SOUND_FOLDER + "/" + soundName);
+                load(sound);
                 mSounds.add(sound);
             }
         } catch (IOException e) {
@@ -40,7 +48,27 @@ public class BeatBox {
             return;
         }
 
+    }
 
+    public void play(Sound sound){
+        Integer soundId = sound.getSoundId();
+        if (soundId == null){
+            return;
+        }
+
+        mSoundPool.play(soundId, 1.0f, 1.0f, 1, 0, 1.0f);
+    }
+
+    /**
+     * 通过AssetFileDescriptor加载sound
+     *
+     * @param sound
+     * @throws IOException
+     */
+    private void load(Sound sound) throws IOException {
+        AssetFileDescriptor fd = mAssets.openFd(sound.getAssetPath());
+        int soundId = mSoundPool.load(fd, 1);
+        sound.setSoundId(soundId);
     }
 
     /**

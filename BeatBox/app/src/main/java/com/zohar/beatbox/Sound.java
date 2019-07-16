@@ -4,6 +4,8 @@ public class Sound {
 
     private String name;
     private String assetPath;
+    private Integer soundId;
+
 
     public Sound(String assetPath) {
         this.assetPath = assetPath;
@@ -18,5 +20,13 @@ public class Sound {
 
     public String getAssetPath() {
         return assetPath;
+    }
+
+    public void setSoundId(Integer soundId){
+        this.soundId = soundId;
+    }
+
+    public Integer getSoundId(){
+        return soundId;
     }
 }
