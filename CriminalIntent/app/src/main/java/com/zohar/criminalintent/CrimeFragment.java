@@ -2,6 +2,7 @@ package com.zohar.criminalintent;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -80,6 +81,9 @@ public class CrimeFragment extends Fragment {
     private int mViewWidth;
     private int mViewHeight;
 
+    private Callbacks mCallbacks;
+
+
     public static Fragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
         args.putSerializable(ARGS_CRIME_ID, crimeId);
@@ -89,6 +93,11 @@ public class CrimeFragment extends Fragment {
 
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallbacks = (Callbacks)context;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -116,6 +125,7 @@ public class CrimeFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 Log.d(TAG, "onTextChanged -> " + s.toString());
                 mCrime.setTitle(s.toString());
+                updateCrime();
             }
 
             @Override
@@ -198,6 +208,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mCrime.setSolved(isChecked);
+                updateCrime();
             }
         });
 
@@ -270,6 +281,10 @@ public class CrimeFragment extends Fragment {
         return view;
     }
 
+    interface Callbacks{
+        void onCrimeUpdated(Crime crime);
+    }
+
     /**
      * 读取联系人号码
      */
@@ -336,12 +351,14 @@ public class CrimeFragment extends Fragment {
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mCrime.setDate(date);
             updateDate();
+            updateCrime();
         }
 
         if (requestCode == REQUEST_CODE_TIME) {
             Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
             mCrime.setDate(date);
             updateTime();
+            updateCrime();
         }
 
         if (requestCode == REQUEST_CONTACT_CODE && data != null) {
@@ -391,6 +408,7 @@ public class CrimeFragment extends Fragment {
             Uri uri = FileProvider.getUriForFile(getActivity(), "com.zohar.criminalintent.fileprovider", mCrimePhotoFile);
             // 解析权限
             getActivity().revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            updateCrime();
             // 更新视图
             updatePhotoView(mViewWidth, mViewHeight);
         }
@@ -474,5 +492,20 @@ public class CrimeFragment extends Fragment {
         }else{
             mPhotoImage.setImageBitmap(PictureUtils.getBitmapScale(mCrimePhotoFile.getPath(), width,height));
         }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
+
+    /**
+     * 更新数据库内容并且通知回调
+     *
+     */
+    private void updateCrime(){
+        CrimeLab.getInstance(getActivity()).updateCrime(mCrime);
+        mCallbacks.onCrimeUpdated(mCrime);
     }
 }
