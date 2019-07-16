@@ -28,6 +28,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -49,6 +50,7 @@ public class CrimeFragment extends Fragment {
     private static final String TAG = "CrimeFragment";
     private final String DIALOG_SHOW = "dialog_show";
     private final String DIALOG_SHOW_TIME = "dialog_show_time";
+    private final String DIALOG_SHOW_PHOTO = "dialog_show_photo";
 
     private static final String ARGS_CRIME_ID = "crime_id";
 
@@ -59,6 +61,7 @@ public class CrimeFragment extends Fragment {
     private static final int PERMISSION_REQUSET_CODE_CALL = 6;
     private static final int REQUEST_READ_CONTACT_CODE = 5;
     private static final int REQUSET_CODE_PHOTH = 7;
+    private static final int REQUEST_CODE_PHOTO_DIALOG = 8;
 
     private Crime mCrime;
     private File mCrimePhotoFile;
@@ -74,6 +77,8 @@ public class CrimeFragment extends Fragment {
     private ImageView mPhotoImage;
 
     private String mPhone;
+    private int mViewWidth;
+    private int mViewHeight;
 
     public static Fragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
@@ -211,7 +216,7 @@ public class CrimeFragment extends Fragment {
             }
         });
 
-        mPhotoImage = view.findViewById(R.id.crime_photo);
+
         mPhotoButton = view.findViewById(R.id.crime_camera);
         // 检测是否有相机可用
         final Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -230,6 +235,35 @@ public class CrimeFragment extends Fragment {
                     getActivity().grantUriPermission(activity.activityInfo.packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 }
                 startActivityForResult(captureIntent, REQUSET_CODE_PHOTH);
+            }
+        });
+
+        // 更新图片
+        mPhotoImage = view.findViewById(R.id.crime_photo);
+        updatePhotoView();
+        mPhotoImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getFragmentManager();
+                PhotoFragment photoDialog = (PhotoFragment) PhotoFragment.newInstance(mCrimePhotoFile);
+                photoDialog.setTargetFragment(CrimeFragment.this, REQUEST_CODE_PHOTO_DIALOG);
+                photoDialog.show(fragmentManager, DIALOG_SHOW_PHOTO);
+            }
+        });
+
+        final ViewTreeObserver viewTreeObserver = mPhotoImage.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                //判断ViewTreeObserver 是否alive，如果存活的话移除这个观察者
+                if (viewTreeObserver.isAlive()) {
+                    viewTreeObserver.removeGlobalOnLayoutListener(this);
+                    //获得宽高
+                    mViewWidth = mPhotoImage.getMeasuredWidth();
+                    mViewHeight = mPhotoImage.getMeasuredHeight();
+                    Log.d(TAG, "onGlobalLayout-> width = " + mViewWidth + "; height = " + mViewHeight);
+                    //updatePhotoVie);
+                }
             }
         });
 
@@ -352,8 +386,13 @@ public class CrimeFragment extends Fragment {
             }
         }
 
-        if (requestCode == REQUSET_CODE_PHOTH){
-
+        // 请求相机拍照后的图片
+        if (requestCode == REQUSET_CODE_PHOTH) {
+            Uri uri = FileProvider.getUriForFile(getActivity(), "com.zohar.criminalintent.fileprovider", mCrimePhotoFile);
+            // 解析权限
+            getActivity().revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            // 更新视图
+            updatePhotoView(mViewWidth, mViewHeight);
         }
     }
 
@@ -416,5 +455,24 @@ public class CrimeFragment extends Fragment {
         }
 
         return getString(R.string.crime_report, mCrime.getTitle(), dateString, sovledString, suspect);
+    }
+
+    /**
+     * 更新图片显示
+     */
+    private void updatePhotoView() {
+        if (mCrimePhotoFile == null && mCrimePhotoFile.exists()) {
+            mPhotoImage.setImageDrawable(null);
+        } else {
+            mPhotoImage.setImageBitmap(PictureUtils.getBitmapScale(mCrimePhotoFile.getPath(), getActivity()));
+        }
+    }
+
+    private void updatePhotoView(int width , int height){
+        if (mCrimePhotoFile == null){
+            mPhotoImage.setImageDrawable(null);
+        }else{
+            mPhotoImage.setImageBitmap(PictureUtils.getBitmapScale(mCrimePhotoFile.getPath(), width,height));
+        }
     }
 }

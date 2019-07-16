@@ -29,4 +29,5 @@
     <string name="crime_report_subject">CriminalIntent Crime Report</string>
     <string name="send_report">Send crime report via</string>
     <string name="call_phone">Call Phone</string>
+    <string name="dialog_photo">大图</string>
 </resources>
