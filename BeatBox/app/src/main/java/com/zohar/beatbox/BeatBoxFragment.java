@@ -29,14 +29,15 @@ public class BeatBoxFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mBeatBox = new BeatBox(getContext());
+        // 设置配置发生变化时，fragment是否保留
+        setRetainInstance(true);
     }
 
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         FragmentBeatBoxBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_beat_box, container, false);
+
+        mBeatBox = new BeatBox(getContext());
 
         binding.recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         binding.recyclerView.setAdapter(new SoundAdapter(mBeatBox.getSounds()));
@@ -88,5 +89,11 @@ public class BeatBoxFragment extends Fragment {
             mBinding.getViewModel().setSound(sound);
             mBinding.executePendingBindings(); // 立即刷新绑定的数据也就是视图
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mBeatBox.release();
     }
 }

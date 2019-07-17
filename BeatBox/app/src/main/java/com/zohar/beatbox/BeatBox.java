@@ -25,8 +25,8 @@ public class BeatBox {
 
     public BeatBox(Context context){
         mAssets = context.getAssets();
-        loadSound(); // 加载sound文件
         mSoundPool = new SoundPool(MAX_SOUNDS, AudioManager.STREAM_MUSIC, 0);
+        loadSound(); // 加载sound文件
     }
 
     /**
@@ -40,12 +40,11 @@ public class BeatBox {
 
             for (String soundName : soundNames){
                 Sound sound = new Sound(SOUND_FOLDER + "/" + soundName);
-                load(sound);
                 mSounds.add(sound);
+                load(sound);
             }
         } catch (IOException e) {
             e.printStackTrace();
-            return;
         }
 
     }
@@ -80,4 +79,11 @@ public class BeatBox {
         return mSounds;
     }
 
+
+    /**
+     * 释放soundpool
+     */
+    public void release(){
+        mSoundPool.release();
+    }
 }
