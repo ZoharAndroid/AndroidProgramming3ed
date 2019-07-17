@@ -19,3 +19,7 @@
 </p>
 
 # 3. BeatBox
+
+<p align = "center">
+<img src="https://raw.githubusercontent.com/ZoharAndroid/AndroidProgramming3ed/master/img/beatbox.gif" width = "250px"/>
+</p>
