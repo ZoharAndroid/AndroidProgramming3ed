@@ -3,18 +3,25 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.zohar.beatbox.SoundViewModel" />
     </data>
 
-    <Button
-        android:background="?attr/colorAccent"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:text="@{viewModel.title}"
-        android:onClick="@{ (view) -> viewModel.onButtonClicked()}"
-        tools:text="Sound name">
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
 
-    </Button>
+        <Button
+            android:layout_gravity="center"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@drawable/button_beat_box"
+            android:onClick="@{ (view) -> viewModel.onButtonClicked()}"
+            android:text="@{viewModel.title}"
+            tools:text="Sound name">
+        </Button>
+    </FrameLayout>
 </layout>
