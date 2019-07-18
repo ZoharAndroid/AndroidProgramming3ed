@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -30,7 +31,7 @@ public class NerdLauncherFragment extends Fragment {
     private RecyclerView mRecyclerView;
 
 
-    public static Fragment newInstance(){
+    public static Fragment newInstance() {
         return new NerdLauncherFragment();
     }
 
@@ -52,86 +53,91 @@ public class NerdLauncherFragment extends Fragment {
     }
 
 
+    private void setAdapter() {
+        Intent startIntent = new Intent(Intent.ACTION_MAIN);
+        startIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 
-     private void setAdapter(){
-         Intent startIntent = new Intent(Intent.ACTION_MAIN);
-         startIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        PackageManager packageManager = getActivity().getPackageManager();
+        List<ResolveInfo> resolveInfos = packageManager.queryIntentActivities(startIntent, 0);
 
-         PackageManager packageManager = getActivity().getPackageManager();
-         List<ResolveInfo> resolveInfos = packageManager.queryIntentActivities(startIntent, 0);
+        Log.d(TAG, "发现 " + resolveInfos.size() + " activity"); // 35
 
-         Log.d(TAG, "发现 " + resolveInfos.size() + " activity"); // 35
+        // 将进行排序
+        Collections.sort(resolveInfos, new Comparator<ResolveInfo>() {
+            @Override
+            public int compare(ResolveInfo o1, ResolveInfo o2) {
+                PackageManager pm = getActivity().getPackageManager();
+                return String.CASE_INSENSITIVE_ORDER.compare(o1.loadLabel(pm).toString(), o2.loadLabel(pm).toString());
+            }
+        });
 
-         // 将进行排序
-         Collections.sort(resolveInfos, new Comparator<ResolveInfo>() {
-             @Override
-             public int compare(ResolveInfo o1, ResolveInfo o2) {
-                 PackageManager pm = getActivity().getPackageManager();
-                 return String.CASE_INSENSITIVE_ORDER.compare(o1.loadLabel(pm).toString(), o2.loadLabel(pm).toString());
-             }
-         });
-
-         mRecyclerView.setAdapter(new ActivityAdapter(resolveInfos));
-     }
+        mRecyclerView.setAdapter(new ActivityAdapter(resolveInfos));
+    }
 
 
-     private class ActivityHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class ActivityHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView mTextView;
         private ResolveInfo mResolveInfo;
 
-         public ActivityHolder(@NonNull View itemView) {
-             super(itemView);
-             mTextView = (TextView)itemView;
-             mTextView.setOnClickListener(this);
-         }
+        private TextView mTextView;
+        private ImageView mImageView;
 
-         public void bind(ResolveInfo resolveInfo){
-             mResolveInfo = resolveInfo;
-             PackageManager packageManager = getActivity().getPackageManager();
-             String appName = resolveInfo.loadLabel(packageManager).toString();
-             mTextView.setText(appName);
-         }
+        public ActivityHolder(@NonNull View itemView) {
+            super(itemView);
 
-         @Override
-         public void onClick(View v) {
-             // 点击相应的item来启动相应的程序
-             ActivityInfo activityInfo = mResolveInfo.activityInfo;
-             Intent intent = new Intent(Intent.ACTION_MAIN);
-             Log.d(TAG,"activityInfo.applicationInfo.packageName:" + activityInfo.applicationInfo.packageName);
-             Log.d(TAG,"activityInfo.packageName:" + activityInfo.packageName);
-             intent.setClassName(activityInfo.packageName, activityInfo.name);
-             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 为打开的任务创建新的任务栈
-             startActivity(intent);
-         }
-     }
+            mTextView = itemView.findViewById(R.id.text_view);
+            mImageView = itemView.findViewById(R.id.image_view);
 
-     private class ActivityAdapter extends RecyclerView.Adapter<ActivityHolder>{
+            itemView.setOnClickListener(this);
+        }
+
+        public void bind(ResolveInfo resolveInfo) {
+            mResolveInfo = resolveInfo;
+            PackageManager packageManager = getActivity().getPackageManager();
+            String appName = resolveInfo.loadLabel(packageManager).toString();
+            mImageView.setImageDrawable(resolveInfo.loadIcon(packageManager));
+            mTextView.setText(appName);
+        }
+
+        @Override
+        public void onClick(View v) {
+            // 点击相应的item来启动相应的程序
+            ActivityInfo activityInfo = mResolveInfo.activityInfo;
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            Log.d(TAG, "activityInfo.applicationInfo.packageName:" + activityInfo.applicationInfo.packageName);
+            Log.d(TAG, "activityInfo.packageName:" + activityInfo.packageName);
+            intent.setClassName(activityInfo.packageName, activityInfo.name);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 为打开的任务创建新的任务栈
+            startActivity(intent);
+        }
+    }
+
+    private class ActivityAdapter extends RecyclerView.Adapter<ActivityHolder> {
 
         private List<ResolveInfo> mResolveInfos;
 
-         public ActivityAdapter(List<ResolveInfo> resolveInfos) {
-             this.mResolveInfos = resolveInfos;
-         }
+        public ActivityAdapter(List<ResolveInfo> resolveInfos) {
+            this.mResolveInfos = resolveInfos;
+        }
 
-         @NonNull
-         @Override
-         public ActivityHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-             View view = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_list_item_1, viewGroup, false);
-             ActivityHolder holder = new ActivityHolder(view);
-             return holder;
-         }
+        @NonNull
+        @Override
+        public ActivityHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+            View view = LayoutInflater.from(getContext()).inflate(R.layout.item_acitivity, viewGroup, false);
+            ActivityHolder holder = new ActivityHolder(view);
+            return holder;
+        }
 
-         @Override
-         public void onBindViewHolder(@NonNull ActivityHolder activityHolder, int i) {
+        @Override
+        public void onBindViewHolder(@NonNull ActivityHolder activityHolder, int i) {
             ResolveInfo resolveInfo = mResolveInfos.get(i);
             activityHolder.bind(resolveInfo);
-         }
+        }
 
-         @Override
-         public int getItemCount() {
-             return mResolveInfos.size();
-         }
-     }
+        @Override
+        public int getItemCount() {
+            return mResolveInfos.size();
+        }
+    }
 
 }
