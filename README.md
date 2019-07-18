@@ -4,6 +4,7 @@
 - [1. GeoQuiz](#1-GeoQuiz)
 - [2. CriminalIntent](#2-CriminalIntent)
 - [3. BeatBox](#3-BeatBox)
+- [4. NerdLauncher](#4-NerdLauncher)
 
 <!-- /TOC -->
 # 1. GeoQuiz
@@ -22,4 +23,10 @@
 
 <p align = "center">
 <img src="https://raw.githubusercontent.com/ZoharAndroid/AndroidProgramming3ed/master/img/beatbox.gif" width = "250px"/>
+</p>
+
+# 4. NerdLauncher
+
+<p align = "center">
+<img src="https://raw.githubusercontent.com/ZoharAndroid/AndroidProgramming3ed/master/img/lunchaer.gif" width = "250px"/>
 </p>
