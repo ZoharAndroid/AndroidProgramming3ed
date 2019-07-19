@@ -6,6 +6,7 @@
 - [3. BeatBox](#3-BeatBox)
 - [4. NerdLauncher](#4-NerdLauncher)
 - [5. DragAndDraw](#5-DragAndDraw)
+- [6. Sunset](#6-Sunset)
 
 <!-- /TOC -->
 # 1. GeoQuiz
@@ -36,4 +37,11 @@
 
 <p align = "center">
 <img src="https://raw.githubusercontent.com/ZoharAndroid/AndroidProgramming3ed/master/img/draganddraw.gif" width = "250px"/>
+</p>
+
+
+# 6. Sunset
+
+<p align = "center">
+<img src="https://raw.githubusercontent.com/ZoharAndroid/AndroidProgramming3ed/master/img/sunset.gif" width = "250px"/>
 </p>
